@@ -2,6 +2,10 @@
 
 > An educational web application demonstrating advanced statistical analysis methods for random number distributions.
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/quizmybrai7)
+[![Live Activity](https://img.shields.io/badge/Try%20Live%20Activity-QuizMyBrainz-D4AF37?style=for-the-badge&logo=google-chrome&logoColor=white)](https://quizmybrainz.com/qmbportal/quizzes/)
+
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -268,6 +272,17 @@ Learn more about the concepts demonstrated:
 - [Monte Carlo Method](https://en.wikipedia.org/wiki/Monte_Carlo_method) - Wikipedia
 - [Fourier Transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform) - Wikipedia
 - [Chi-Square Test](https://en.wikipedia.org/wiki/Chi-squared_test) - Wikipedia
+
+### ☕ Support This Project
+
+If you find this tool helpful, consider supporting its development:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/quizmybrai7)
+
+![GitHub stars](https://img.shields.io/github/stars/mariorazo97/statistical-pattern-analyzer?style=social)
+![GitHub forks](https://img.shields.io/github/forks/mariorazo97/statistical-pattern-analyzer?style=social)
+
+
 
 ## 📞 Contact & Support
 
