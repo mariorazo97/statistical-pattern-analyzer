@@ -1,0 +1,1782 @@
+<!-- statistical_pattern_analyzer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Pattern Analyzer - Educational Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #141b3d;
+            --bg-tertiary: #1a2247;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7c3aed;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --border-color: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 2rem;
+            border-bottom: 2px solid var(--accent-primary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .disclaimer {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--accent-danger);
+            padding: 1rem;
+            margin: 1rem 2rem;
+            border-radius: 4px;
+        }
+
+        .disclaimer strong {
+            color: var(--accent-danger);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .control-panel {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-panel h2 {
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 212, 255, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analysis-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .analysis-section h3 {
+            color: var(--accent-primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .analysis-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .explanation-box {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-secondary);
+        }
+
+        .explanation-box h4 {
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .explanation-box p {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        .formula {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .prediction-display {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--accent-primary);
+            margin-bottom: 2rem;
+        }
+
+        .prediction-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .number-ball {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: bounce 0.5s ease;
+        }
+
+        .number-ball.bonus {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--bg-tertiary);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-success);
+            border: 1px solid var(--accent-success);
+        }
+
+        .badge.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-warning);
+            border: 1px solid var(--accent-warning);
+        }
+
+        .badge.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-danger);
+            border: 1px solid var(--accent-danger);
+        }
+
+        .data-input-section {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-input-section h4 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr) auto;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .input-row input {
+            width: 100%;
+        }
+
+        .input-row button {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .custom-data-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 6px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        .data-row:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+            gap: 2px;
+            padding: 1rem;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔬 Statistical Pattern Analyzer</h1>
+        <p>Advanced Mathematical Analysis of Random Number Distributions - Educational Tool</p>
+    </div>
+
+    <div class="disclaimer">
+        <strong>⚠️ Educational Purpose Only:</strong> This tool demonstrates statistical analysis methods on random number distributions. It is designed for educational purposes to understand probability theory, pattern detection, and mathematical modeling. No system can predict truly random events.
+    </div>
+
+    <div class="container">
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h2><span class="icon">🎛️</span>Control Panel</h2>
+            <div class="control-grid">
+                <div class="control-group">
+                    <label>Game Type</label>
+                    <select id="gameType">
+                        <option value="5ball69">5-Ball Game (1-69) + Bonus (1-26)</option>
+                        <option value="5ball70">5-Ball Game (1-70) + Bonus (1-25)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Historical Data Size</label>
+                    <select id="dataSize">
+                        <option value="100">100 Draws</option>
+                        <option value="250">250 Draws</option>
+                        <option value="500" selected>500 Draws</option>
+                        <option value="1000">1000 Draws</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Monte Carlo Iterations</label>
+                    <select id="mcIterations">
+                        <option value="500">500</option>
+                        <option value="1000" selected>1000</option>
+                        <option value="5000">5000</option>
+                        <option value="10000">10000</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateMockData()">
+                    <span class="icon">🔄</span>Generate New Mock Data
+                </button>
+                <button onclick="runFullAnalysis()">
+                    <span class="icon">📊</span>Run Full Analysis
+                </button>
+                <button onclick="generatePrediction()">
+                    <span class="icon">🎯</span>Generate Statistical Prediction
+                </button>
+                <button onclick="toggleDataInput()" class="secondary">
+                    <span class="icon">✏️</span>Input Custom Data
+                </button>
+            </div>
+
+            <!-- Custom Data Input Section -->
+            <div id="dataInputSection" class="data-input-section" style="display: none;">
+                <h4>Add Custom Historical Data (Max 30 records)</h4>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Enter 5 main numbers and 1 bonus number:</p>
+                <div class="input-row">
+                    <input type="number" id="custom1" min="1" placeholder="Ball 1">
+                    <input type="number" id="custom2" min="1" placeholder="Ball 2">
+                    <input type="number" id="custom3" min="1" placeholder="Ball 3">
+                    <input type="number" id="custom4" min="1" placeholder="Ball 4">
+                    <input type="number" id="custom5" min="1" placeholder="Ball 5">
+                    <input type="number" id="customBonus" min="1" placeholder="Bonus">
+                    <button onclick="addCustomData()">Add</button>
+                </div>
+                <div id="customDataList" class="custom-data-list"></div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="value" id="totalDraws">0</div>
+                <div class="label">Total Draws</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="entropyScore">0.00</div>
+                <div class="label">Entropy Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="chiSquare">0.00</div>
+                <div class="label">Chi-Square Value</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="benfordConformity">N/A</div>
+                <div class="label">Benford Conformity</div>
+            </div>
+        </div>
+
+        <!-- Prediction Display -->
+        <div id="predictionDisplay" class="prediction-display" style="display: none;">
+            <h2 style="text-align: center; margin-bottom: 1rem;">
+                <span class="icon">🎯</span>Statistical Prediction
+            </h2>
+            <div class="prediction-numbers" id="predictionNumbers"></div>
+            <div style="text-align: center; color: var(--text-secondary);">
+                <p id="predictionProbability"></p>
+                <p id="predictionConfidence"></p>
+            </div>
+        </div>
+
+        <!-- Benford's Law Analysis -->
+        <div class="analysis-section">
+            <h3><span class="icon">📊</span>Benford's Law Analysis<span class="badge success" id="benfordBadge">Analyzing...</span></h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="benfordChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>What is Benford's Law?</h4>
+                    <p>Benford's Law states that in many naturally occurring datasets, the first digit is more likely to be small. Specifically, the digit "1" appears as the first digit about 30% of the time.</p>
+                    <div class="formula">
+                        P(d) = log₁₀(1 + 1/d)
+                        <br>where d ∈ {1, 2, 3, ..., 9}
+                    </div>
+                    <p>We compare the actual first-digit distribution in our dataset against this theoretical distribution. Large deviations might indicate non-random patterns.</p>
+                    <p><strong>Chi-Square Test:</strong> We use the χ² statistic to quantify the deviation:</p>
+                    <div class="formula">
+                        χ² = Σ((Observed - Expected)² / Expected)
+                    </div>
+                    <p id="benfordResult"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shannon Entropy Analysis -->
+        <div class="analysis-section">
+            <h3><span class="icon">🌀</span>Shannon Entropy Analysis<span class="badge warning" id="entropyBadge">Analyzing...</span></h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="entropyChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>Understanding Entropy</h4>
+                    <p>Shannon Entropy measures the randomness or unpredictability in a dataset. Higher entropy indicates more randomness.</p>
+                    <div class="formula">
+                        H(X) = -Σ p(x) × log₂(p(x))
+                        <br>Normalized: H_norm = H(X) / log₂(N)
+                    </div>
+                    <p>Where p(x) is the probability of observing value x, and N is the number of unique values.</p>
+                    <p><strong>Interpretation:</strong></p>
+                    <ul style="margin-left: 1.5rem; color: var(--text-secondary);">
+                        <li>1.0 = Perfect randomness (uniform distribution)</li>
+                        <li>0.8-0.99 = High randomness</li>
+                        <li>0.6-0.79 = Moderate randomness</li>
+                        <li>&lt;0.6 = Low randomness (patterns detected)</li>
+                    </ul>
+                    <p id="entropyResult" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Markov Chain Analysis -->
+        <div class="analysis-section">
+            <h3><span class="icon">🔗</span>Markov Chain Transition Analysis</h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="markovChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>What are Markov Chains?</h4>
+                    <p>A Markov Chain models the probability of transitioning from one state to another. We analyze which numbers tend to appear after specific numbers.</p>
+                    <div class="formula">
+                        P(X_t = j | X_{t-1} = i)
+                        <br>Transition Probability Matrix [P_ij]
+                    </div>
+                    <p>We calculate the conditional probability that number j appears given that number i appeared in the previous draw.</p>
+                    <p><strong>Heat Map:</strong> The chart shows transition probabilities where darker colors indicate stronger associations.</p>
+                    <p id="markovResult"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monte Carlo Simulation -->
+        <div class="analysis-section">
+            <h3><span class="icon">🎲</span>Monte Carlo Simulation Results</h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="monteCarloChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>Monte Carlo Method</h4>
+                    <p>Monte Carlo simulation uses repeated random sampling to estimate probabilities and outcomes. We run thousands of simulated draws to understand match distributions.</p>
+                    <div class="formula">
+                        P(event) ≈ (# favorable outcomes) / (# total simulations)
+                    </div>
+                    <p>For each simulation iteration, we:</p>
+                    <ol style="margin-left: 1.5rem; color: var(--text-secondary);">
+                        <li>Generate a random set of numbers</li>
+                        <li>Compare against our prediction</li>
+                        <li>Count matching numbers</li>
+                        <li>Aggregate results across all iterations</li>
+                    </ol>
+                    <p><strong>Results show:</strong> The probability distribution of getting 0, 1, 2, 3, 4, 5 matches, plus bonus ball.</p>
+                    <p id="monteCarloResult" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fourier Transform Analysis -->
+        <div class="analysis-section">
+            <h3><span class="icon">〰️</span>Fourier Transform - Periodic Pattern Detection</h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="fourierChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>Discrete Fourier Transform (DFT)</h4>
+                    <p>The Fourier Transform decomposes a time series into its constituent frequencies, revealing periodic patterns that might not be obvious.</p>
+                    <div class="formula">
+                        X(k) = Σ x(n) × e^(-i2πkn/N)
+                        <br>Magnitude = √(Real² + Imaginary²)
+                    </div>
+                    <p>We apply DFT to the sum of numbers in each draw over time. High-magnitude frequency components indicate periodic patterns.</p>
+                    <p><strong>Interpretation:</strong></p>
+                    <ul style="margin-left: 1.5rem; color: var(--text-secondary);">
+                        <li>Peak at frequency f → Pattern repeats every (N/f) draws</li>
+                        <li>Flat spectrum → No periodic patterns (true randomness)</li>
+                    </ul>
+                    <p id="fourierResult" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frequency Distribution -->
+        <div class="analysis-section">
+            <h3><span class="icon">📈</span>Number Frequency Distribution</h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="frequencyChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>Chi-Square Test for Uniformity</h4>
+                    <p>In a truly random lottery, all numbers should appear with approximately equal frequency over a large sample size.</p>
+                    <div class="formula">
+                        χ² = Σ((O_i - E)² / E)
+                        <br>E = (Total Draws × Balls per Draw) / Number Range
+                    </div>
+                    <p>Where O_i is the observed frequency of number i, and E is the expected frequency.</p>
+                    <p><strong>Null Hypothesis:</strong> The numbers are uniformly distributed (random).</p>
+                    <p>If χ² is very large and p-value &lt; 0.05, we reject the null hypothesis, suggesting non-random patterns.</p>
+                    <p id="frequencyResult" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hot/Cold Analysis -->
+        <div class="analysis-section">
+            <h3><span class="icon">🌡️</span>Hot & Cold Number Analysis</h3>
+            <div class="analysis-content">
+                <div class="chart-container">
+                    <canvas id="hotColdChart"></canvas>
+                </div>
+                <div class="explanation-box">
+                    <h4>Recency-Weighted Scoring</h4>
+                    <p>"Hot" numbers have appeared frequently in recent draws, while "Cold" numbers haven't appeared for a long time.</p>
+                    <div class="formula">
+                        Hot Score = Recent Frequency / Window Size
+                        <br>Cold Score = 1 - e^(-Gap / Average Gap)
+                    </div>
+                    <p><strong>Important Note:</strong> In truly random systems, past results don't influence future outcomes (no "memory"). However, analyzing these patterns helps understand variance and psychological biases.</p>
+                    <p>This analysis is useful for educational purposes to demonstrate how gamblers often fall prey to the "hot hand fallacy" or "gambler's fallacy."</p>
+                    <p id="hotColdResult" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>Statistical Pattern Analyzer</strong> - An Educational Tool</p>
+        <p>© 2024 - For demonstration of mathematical concepts only</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            This tool demonstrates various statistical analysis techniques including Benford's Law, Shannon Entropy, 
+            Markov Chains, Monte Carlo Simulation, and Fourier Analysis. Remember: in truly random systems, 
+            past results do not predict future outcomes.
+        </p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // GLOBAL VARIABLES AND CONFIGURATION
+        // ==========================================
+        let historicalData = [];
+        let customData = [];
+        let gameConfig = {
+            mainRange: 69,
+            bonusRange: 26,
+            mainBalls: 5
+        };
+        let charts = {};
+
+        // ==========================================
+        // DATA GENERATION FUNCTIONS
+        // ==========================================
+        function generateMockData() {
+            const dataSize = parseInt(document.getElementById('dataSize').value);
+            const gameType = document.getElementById('gameType').value;
+            
+            // Update game configuration
+            if (gameType === '5ball69') {
+                gameConfig = { mainRange: 69, bonusRange: 26, mainBalls: 5 };
+            } else {
+                gameConfig = { mainRange: 70, bonusRange: 25, mainBalls: 5 };
+            }
+
+            historicalData = [];
+            
+            for (let i = 0; i < dataSize; i++) {
+                const draw = {
+                    date: new Date(Date.now() - (dataSize - i) * 3.5 * 24 * 60 * 60 * 1000), // ~2 draws per week
+                    numbers: generateRandomNumbers(gameConfig.mainRange, gameConfig.mainBalls),
+                    bonus: Math.floor(Math.random() * gameConfig.bonusRange) + 1
+                };
+                historicalData.push(draw);
+            }
+
+            updateStatsDisplay();
+            showNotification('Mock data generated successfully!', 'success');
+        }
+
+        function generateRandomNumbers(max, count) {
+            const numbers = [];
+            while (numbers.length < count) {
+                const num = Math.floor(Math.random() * max) + 1;
+                if (!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+
+        function toggleDataInput() {
+            const section = document.getElementById('dataInputSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addCustomData() {
+            if (customData.length >= 30) {
+                showNotification('Maximum 30 custom records allowed', 'warning');
+                return;
+            }
+
+            const balls = [
+                parseInt(document.getElementById('custom1').value),
+                parseInt(document.getElementById('custom2').value),
+                parseInt(document.getElementById('custom3').value),
+                parseInt(document.getElementById('custom4').value),
+                parseInt(document.getElementById('custom5').value)
+            ];
+            const bonus = parseInt(document.getElementById('customBonus').value);
+
+            // Validation
+            if (balls.some(b => isNaN(b) || b < 1 || b > gameConfig.mainRange)) {
+                showNotification('Invalid main ball numbers', 'danger');
+                return;
+            }
+            if (isNaN(bonus) || bonus < 1 || bonus > gameConfig.bonusRange) {
+                showNotification('Invalid bonus number', 'danger');
+                return;
+            }
+            if (new Set(balls).size !== balls.length) {
+                showNotification('Duplicate numbers not allowed', 'danger');
+                return;
+            }
+
+            customData.push({
+                date: new Date(),
+                numbers: balls.sort((a, b) => a - b),
+                bonus: bonus
+            });
+
+            // Clear inputs
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`custom${i}`).value = '';
+            }
+            document.getElementById('customBonus').value = '';
+
+            displayCustomData();
+            showNotification('Custom data added', 'success');
+        }
+
+        function displayCustomData() {
+            const container = document.getElementById('customDataList');
+            container.innerHTML = '<h5 style="color: var(--accent-primary); margin-bottom: 0.5rem;">Custom Data (' + customData.length + '/30):</h5>';
+            
+            customData.forEach((draw, index) => {
+                const div = document.createElement('div');
+                div.className = 'data-row';
+                div.innerHTML = `
+                    <span>${draw.numbers.join(', ')} + ${draw.bonus}</span>
+                    <button onclick="removeCustomData(${index})" style="padding: 0.25rem 0.75rem; background: var(--accent-danger);">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function removeCustomData(index) {
+            customData.splice(index, 1);
+            displayCustomData();
+        }
+
+        function getCombinedData() {
+            return [...historicalData, ...customData];
+        }
+
+        // ==========================================
+        // BENFORD'S LAW ANALYSIS
+        // ==========================================
+        function analyzeBenfordsLaw() {
+            const data = getCombinedData();
+            const firstDigits = Array(10).fill(0);
+            
+            // Count first digits
+            data.forEach(draw => {
+                draw.numbers.forEach(num => {
+                    const firstDigit = parseInt(String(num)[0]);
+                    firstDigits[firstDigit]++;
+                });
+            });
+
+            // Calculate expected frequencies based on Benford's Law
+            const total = firstDigits.reduce((sum, count) => sum + count, 0);
+            const expected = [];
+            const observed = [];
+            const labels = [];
+
+            let chiSquare = 0;
+            for (let d = 1; d <= 9; d++) {
+                const benfordProb = Math.log10(1 + 1/d);
+                const expectedCount = benfordProb * total;
+                const observedCount = firstDigits[d];
+                
+                expected.push((benfordProb * 100).toFixed(2));
+                observed.push((observedCount / total * 100).toFixed(2));
+                labels.push(d.toString());
+
+                if (expectedCount > 0) {
+                    chiSquare += Math.pow(observedCount - expectedCount, 2) / expectedCount;
+                }
+            }
+
+            // Update chart
+            const ctx = document.getElementById('benfordChart').getContext('2d');
+            if (charts.benford) charts.benford.destroy();
+            
+            charts.benford = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Benford\'s Law (Expected)',
+                            data: expected,
+                            backgroundColor: 'rgba(0, 212, 255, 0.3)',
+                            borderColor: 'rgba(0, 212, 255, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Observed Data',
+                            data: observed,
+                            backgroundColor: 'rgba(124, 58, 237, 0.3)',
+                            borderColor: 'rgba(124, 58, 237, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Percentage (%)',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'First Digit',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            // Calculate p-value (simplified)
+            const pValue = chiSquare > 15.507 ? 0.01 : (chiSquare > 13.362 ? 0.05 : 0.10);
+            const conforms = pValue > 0.05;
+
+            document.getElementById('benfordResult').innerHTML = `
+                <strong>Chi-Square Statistic:</strong> ${chiSquare.toFixed(4)}<br>
+                <strong>P-Value:</strong> ~${pValue.toFixed(3)}<br>
+                <strong>Result:</strong> <span style="color: ${conforms ? 'var(--accent-success)' : 'var(--accent-warning)'}">
+                    ${conforms ? 'Conforms to Benford\'s Law' : 'Deviates from Benford\'s Law'}
+                </span>
+            `;
+
+            document.getElementById('benfordBadge').textContent = conforms ? 'Conforms' : 'Anomaly';
+            document.getElementById('benfordBadge').className = `badge ${conforms ? 'success' : 'warning'}`;
+            document.getElementById('benfordConformity').textContent = conforms ? 'Yes' : 'No';
+
+            return { chiSquare, pValue, conforms };
+        }
+
+        // ==========================================
+        // SHANNON ENTROPY ANALYSIS
+        // ==========================================
+        function calculateEntropy() {
+            const data = getCombinedData();
+            const allNumbers = [];
+            
+            data.forEach(draw => {
+                allNumbers.push(...draw.numbers);
+            });
+
+            // Calculate frequency distribution
+            const frequency = {};
+            allNumbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+
+            const total = allNumbers.length;
+            let entropy = 0;
+
+            Object.values(frequency).forEach(count => {
+                const p = count / total;
+                if (p > 0) {
+                    entropy -= p * Math.log2(p);
+                }
+            });
+
+            // Normalize by maximum possible entropy
+            const uniqueNumbers = Object.keys(frequency).length;
+            const maxEntropy = Math.log2(uniqueNumbers);
+            const normalizedEntropy = maxEntropy > 0 ? entropy / maxEntropy : 0;
+
+            // Create visualization
+            const ctx = document.getElementById('entropyChart').getContext('2d');
+            if (charts.entropy) charts.entropy.destroy();
+
+            const entropyData = data.slice(-50).map((draw, index) => {
+                const windowNumbers = [];
+                for (let i = Math.max(0, index - 10); i <= index; i++) {
+                    if (data[i]) windowNumbers.push(...data[i].numbers);
+                }
+                return calculateWindowEntropy(windowNumbers);
+            });
+
+            charts.entropy = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: entropyData.map((_, i) => `Draw ${i + 1}`),
+                    datasets: [{
+                        label: 'Rolling Entropy Score',
+                        data: entropyData,
+                        borderColor: 'rgba(0, 212, 255, 1)',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: 'Normalized Entropy',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { 
+                                color: '#9ca3af',
+                                maxTicksLimit: 10
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            let quality = 'Low';
+            let color = 'var(--accent-danger)';
+            if (normalizedEntropy >= 0.95) {
+                quality = 'Excellent (Highly Random)';
+                color = 'var(--accent-success)';
+            } else if (normalizedEntropy >= 0.85) {
+                quality = 'Good';
+                color = 'var(--accent-success)';
+            } else if (normalizedEntropy >= 0.70) {
+                quality = 'Moderate';
+                color = 'var(--accent-warning)';
+            }
+
+            document.getElementById('entropyResult').innerHTML = `
+                <strong>Normalized Entropy:</strong> ${normalizedEntropy.toFixed(4)}<br>
+                <strong>Randomness Quality:</strong> <span style="color: ${color}">${quality}</span><br>
+                <strong>Unique Numbers:</strong> ${uniqueNumbers} / ${gameConfig.mainRange}
+            `;
+
+            document.getElementById('entropyScore').textContent = normalizedEntropy.toFixed(3);
+            document.getElementById('entropyBadge').textContent = quality;
+            document.getElementById('entropyBadge').className = `badge ${normalizedEntropy >= 0.85 ? 'success' : 'warning'}`;
+
+            return normalizedEntropy;
+        }
+
+        function calculateWindowEntropy(numbers) {
+            if (numbers.length === 0) return 0;
+            
+            const frequency = {};
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+
+            const total = numbers.length;
+            let entropy = 0;
+
+            Object.values(frequency).forEach(count => {
+                const p = count / total;
+                if (p > 0) {
+                    entropy -= p * Math.log2(p);
+                }
+            });
+
+            const uniqueNumbers = Object.keys(frequency).length;
+            const maxEntropy = Math.log2(uniqueNumbers);
+            return maxEntropy > 0 ? entropy / maxEntropy : 0;
+        }
+
+        // ==========================================
+        // MARKOV CHAIN ANALYSIS
+        // ==========================================
+        function analyzeMarkovChain() {
+            const data = getCombinedData();
+            const transitions = {};
+
+            // Build transition matrix
+            for (let i = 0; i < data.length - 1; i++) {
+                const currentNumbers = data[i].numbers;
+                const nextNumbers = data[i + 1].numbers;
+
+                currentNumbers.forEach(from => {
+                    if (!transitions[from]) transitions[from] = {};
+                    
+                    nextNumbers.forEach(to => {
+                        if (!transitions[from][to]) transitions[from][to] = 0;
+                        transitions[from][to]++;
+                    });
+                });
+            }
+
+            // Calculate probabilities
+            const transitionProbs = {};
+            Object.keys(transitions).forEach(from => {
+                const total = Object.values(transitions[from]).reduce((sum, count) => sum + count, 0);
+                transitionProbs[from] = {};
+                Object.keys(transitions[from]).forEach(to => {
+                    transitionProbs[from][to] = transitions[from][to] / total;
+                });
+            });
+
+            // Find top transitions
+            const topTransitions = [];
+            Object.keys(transitionProbs).forEach(from => {
+                Object.keys(transitionProbs[from]).forEach(to => {
+                    topTransitions.push({
+                        from: parseInt(from),
+                        to: parseInt(to),
+                        prob: transitionProbs[from][to]
+                    });
+                });
+            });
+
+            topTransitions.sort((a, b) => b.prob - a.prob);
+            const top10 = topTransitions.slice(0, 10);
+
+            // Create chart
+            const ctx = document.getElementById('markovChart').getContext('2d');
+            if (charts.markov) charts.markov.destroy();
+
+            charts.markov = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: top10.map(t => `${t.from} → ${t.to}`),
+                    datasets: [{
+                        label: 'Transition Probability',
+                        data: top10.map(t => (t.prob * 100).toFixed(2)),
+                        backgroundColor: top10.map(t => 
+                            `rgba(${Math.floor(255 * t.prob)}, ${Math.floor(100 + 155 * (1-t.prob))}, 255, 0.7)`
+                        ),
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Probability (%)',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('markovResult').innerHTML = `
+                <strong>Total Transitions Analyzed:</strong> ${topTransitions.length}<br>
+                <strong>Strongest Transition:</strong> ${top10[0].from} → ${top10[0].to} (${(top10[0].prob * 100).toFixed(2)}%)<br>
+                <strong>Note:</strong> In truly random systems, all transitions should have approximately equal probability.
+            `;
+
+            return transitionProbs;
+        }
+
+        // ==========================================
+        // MONTE CARLO SIMULATION
+        // ==========================================
+        function runMonteCarloSimulation(targetNumbers, targetBonus) {
+            const iterations = parseInt(document.getElementById('mcIterations').value);
+            const matches = Array(7).fill(0); // 0-5 matches + bonus
+
+            for (let i = 0; i < iterations; i++) {
+                const randomNumbers = generateRandomNumbers(gameConfig.mainRange, gameConfig.mainBalls);
+                const randomBonus = Math.floor(Math.random() * gameConfig.bonusRange) + 1;
+
+                const matchCount = targetNumbers.filter(n => randomNumbers.includes(n)).length;
+                const bonusMatch = targetBonus === randomBonus;
+
+                if (bonusMatch && matchCount === 5) {
+                    matches[6]++; // Jackpot
+                } else {
+                    matches[matchCount]++;
+                }
+            }
+
+            // Calculate probabilities
+            const probabilities = matches.map(count => (count / iterations * 100).toFixed(4));
+
+            // Create chart
+            const ctx = document.getElementById('monteCarloChart').getContext('2d');
+            if (charts.monteCarlo) charts.monteCarlo.destroy();
+
+            charts.monteCarlo = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0 Matches', '1 Match', '2 Matches', '3 Matches', '4 Matches', '5 Matches', 'Jackpot'],
+                    datasets: [{
+                        label: 'Probability (%)',
+                        data: probabilities,
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(251, 191, 36, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(0, 212, 255, 0.7)',
+                            'rgba(124, 58, 237, 0.7)',
+                            'rgba(236, 72, 153, 0.9)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            type: 'logarithmic',
+                            title: {
+                                display: true,
+                                text: 'Probability (%) - Log Scale',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('monteCarloResult').innerHTML = `
+                <strong>Simulation Iterations:</strong> ${iterations.toLocaleString()}<br>
+                <strong>Most Likely Outcome:</strong> ${probabilities.indexOf(Math.max(...probabilities))} matches<br>
+                <strong>Jackpot Probability:</strong> ${probabilities[6]}% ≈ 1 in ${Math.round(100 / parseFloat(probabilities[6])).toLocaleString()}
+            `;
+
+            return probabilities;
+        }
+
+        // ==========================================
+        // FOURIER TRANSFORM ANALYSIS
+        // ==========================================
+        function analyzeFourierTransform() {
+            const data = getCombinedData();
+            const timeSeries = data.map(draw => {
+                return draw.numbers.reduce((sum, num) => sum + num, 0) / draw.numbers.length;
+            });
+
+            if (timeSeries.length === 0) {
+                document.getElementById('fourierResult').innerHTML = '<strong>Error:</strong> No data available for analysis.';
+                return;
+            }
+
+            // Perform DFT
+            const n = timeSeries.length;
+            const frequencies = [];
+            const components = Math.min(Math.floor(n / 2), 20);
+
+            for (let k = 0; k < components; k++) {
+                let real = 0;
+                let imag = 0;
+
+                for (let t = 0; t < n; t++) {
+                    const angle = (2 * Math.PI * k * t) / n;
+                    real += timeSeries[t] * Math.cos(angle);
+                    imag += timeSeries[t] * Math.sin(angle);
+                }
+
+                const magnitude = Math.sqrt(real * real + imag * imag);
+                frequencies.push(magnitude);
+            }
+
+            if (frequencies.length === 0) {
+                document.getElementById('fourierResult').innerHTML = '<strong>Error:</strong> Insufficient data for Fourier analysis.';
+                return;
+            }
+
+            // Create chart
+            const ctx = document.getElementById('fourierChart').getContext('2d');
+            if (charts.fourier) charts.fourier.destroy();
+
+            charts.fourier = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: frequencies.map((_, i) => i === 0 ? 'DC' : `f${i}`),
+                    datasets: [{
+                        label: 'Frequency Magnitude',
+                        data: frequencies,
+                        borderColor: 'rgba(0, 212, 255, 1)',
+                        backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Magnitude',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Frequency Component',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            // Find dominant frequency
+            const avgMagnitude = frequencies.reduce((sum, m) => sum + m, 0) / frequencies.length;
+            const significantFreqs = frequencies
+                .map((mag, idx) => ({ freq: idx, magnitude: mag, strength: mag / avgMagnitude }))
+                .filter(f => f.freq > 0 && f.strength > 2)
+                .sort((a, b) => b.strength - a.strength);
+
+            if (significantFreqs.length > 0) {
+                const top = significantFreqs[0];
+                const period = n / top.freq;
+                document.getElementById('fourierResult').innerHTML = `
+                    <strong>Dominant Frequency:</strong> f${top.freq}<br>
+                    <strong>Period:</strong> ~${period.toFixed(1)} draws<br>
+                    <strong>Strength:</strong> ${top.strength.toFixed(2)}x average<br>
+                    <strong>Interpretation:</strong> <span style="color: var(--accent-warning)">Potential periodic pattern detected</span>
+                `;
+            } else {
+                document.getElementById('fourierResult').innerHTML = `
+                    <strong>Result:</strong> <span style="color: var(--accent-success)">No significant periodic patterns detected</span><br>
+                    This suggests the data exhibits random behavior without predictable cycles.
+                `;
+            }
+        }
+
+        // ==========================================
+        // FREQUENCY DISTRIBUTION ANALYSIS
+        // ==========================================
+        function analyzeFrequencyDistribution() {
+            const data = getCombinedData();
+            const frequency = Array(gameConfig.mainRange + 1).fill(0);
+
+            data.forEach(draw => {
+                draw.numbers.forEach(num => {
+                    frequency[num]++;
+                });
+            });
+
+            // Calculate chi-square
+            const totalDraws = data.length;
+            const expectedFreq = (totalDraws * gameConfig.mainBalls) / gameConfig.mainRange;
+            let chiSquare = 0;
+
+            for (let i = 1; i <= gameConfig.mainRange; i++) {
+                chiSquare += Math.pow(frequency[i] - expectedFreq, 2) / expectedFreq;
+            }
+
+            // Create chart
+            const ctx = document.getElementById('frequencyChart').getContext('2d');
+            if (charts.frequency) charts.frequency.destroy();
+
+            const sortedFreq = frequency.slice(1).map((count, idx) => ({ num: idx + 1, count }))
+                .sort((a, b) => b.count - a.count);
+
+            charts.frequency = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedFreq.slice(0, 30).map(f => f.num.toString()),
+                    datasets: [{
+                        label: 'Frequency',
+                        data: sortedFreq.slice(0, 30).map(f => f.count),
+                        backgroundColor: sortedFreq.slice(0, 30).map((f, idx) => {
+                            const ratio = idx / 30;
+                            return `rgba(${Math.floor(255 * ratio)}, ${Math.floor(100 + 155 * (1-ratio))}, 255, 0.7)`;
+                        }),
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Occurrences',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Number',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            const degreesOfFreedom = gameConfig.mainRange - 1;
+            const isUniform = chiSquare < 77.929; // Approximate critical value for df=69 at α=0.05
+
+            document.getElementById('frequencyResult').innerHTML = `
+                <strong>Chi-Square Statistic:</strong> ${chiSquare.toFixed(4)}<br>
+                <strong>Degrees of Freedom:</strong> ${degreesOfFreedom}<br>
+                <strong>Expected Frequency:</strong> ${expectedFreq.toFixed(2)} per number<br>
+                <strong>Result:</strong> <span style="color: ${isUniform ? 'var(--accent-success)' : 'var(--accent-warning)'}">
+                    ${isUniform ? 'Uniform distribution (random)' : 'Non-uniform distribution detected'}
+                </span>
+            `;
+
+            document.getElementById('chiSquare').textContent = chiSquare.toFixed(2);
+        }
+
+        // ==========================================
+        // HOT/COLD ANALYSIS
+        // ==========================================
+        function analyzeHotCold() {
+            const data = getCombinedData();
+            const recentWindow = 20;
+            const recentData = data.slice(-recentWindow);
+
+            // Calculate hot scores (recent frequency)
+            const recentFreq = Array(gameConfig.mainRange + 1).fill(0);
+            recentData.forEach(draw => {
+                draw.numbers.forEach(num => recentFreq[num]++);
+            });
+
+            // Calculate cold scores (gap since last appearance)
+            const lastSeen = Array(gameConfig.mainRange + 1).fill(-1);
+            data.forEach((draw, idx) => {
+                draw.numbers.forEach(num => {
+                    lastSeen[num] = idx;
+                });
+            });
+
+            const gaps = lastSeen.map((lastIdx, num) => {
+                if (num === 0) return 0;
+                return lastIdx >= 0 ? data.length - 1 - lastIdx : data.length;
+            });
+
+            // Combine into scores
+            const scores = [];
+            for (let i = 1; i <= gameConfig.mainRange; i++) {
+                const hotScore = recentFreq[i] / recentWindow;
+                const coldScore = 1 - Math.exp(-gaps[i] / 30);
+                scores.push({
+                    num: i,
+                    hot: hotScore,
+                    cold: coldScore,
+                    gap: gaps[i]
+                });
+            }
+
+            // Sort by hot and cold
+            const hottest = [...scores].sort((a, b) => b.hot - a.hot).slice(0, 10);
+            const coldest = [...scores].sort((a, b) => b.cold - a.cold).slice(0, 10);
+
+            // Create chart
+            const ctx = document.getElementById('hotColdChart').getContext('2d');
+            if (charts.hotCold) charts.hotCold.destroy();
+
+            charts.hotCold = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Hot Numbers',
+                            data: hottest.map(s => ({ x: s.num, y: s.hot * 100 })),
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            pointRadius: 8
+                        },
+                        {
+                            label: 'Cold Numbers',
+                            data: coldest.map(s => ({ x: s.num, y: s.cold * 100 })),
+                            backgroundColor: 'rgba(0, 212, 255, 0.7)',
+                            borderColor: 'rgba(0, 212, 255, 1)',
+                            pointRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Score',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            min: 0,
+                            max: gameConfig.mainRange + 1,
+                            title: {
+                                display: true,
+                                text: 'Number',
+                                color: '#9ca3af'
+                            },
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('hotColdResult').innerHTML = `
+                <strong>Hottest Number:</strong> ${hottest[0].num} (appeared ${Math.round(hottest[0].hot * recentWindow)} times in last ${recentWindow} draws)<br>
+                <strong>Coldest Number:</strong> ${coldest[0].num} (${coldest[0].gap} draws since last appearance)<br>
+                <strong>Remember:</strong> Past results do not influence future random draws!
+            `;
+        }
+
+        // ==========================================
+        // PREDICTION GENERATION
+        // ==========================================
+        function generatePrediction() {
+            const data = getCombinedData();
+            if (data.length === 0) {
+                showNotification('Please generate or add data first', 'warning');
+                return;
+            }
+
+            // Calculate composite scores for each number
+            const scores = [];
+            const frequency = Array(gameConfig.mainRange + 1).fill(0);
+            const lastSeen = Array(gameConfig.mainRange + 1).fill(-1);
+
+            data.forEach((draw, idx) => {
+                draw.numbers.forEach(num => {
+                    frequency[num]++;
+                    lastSeen[num] = idx;
+                });
+            });
+
+            for (let i = 1; i <= gameConfig.mainRange; i++) {
+                const freq = frequency[i];
+                const gap = lastSeen[i] >= 0 ? data.length - 1 - lastSeen[i] : data.length;
+                const hotScore = freq / data.length;
+                const coldScore = 1 - Math.exp(-gap / 30);
+                const randomFactor = Math.random();
+
+                const compositeScore = 
+                    0.25 * hotScore +
+                    0.25 * coldScore +
+                    0.50 * randomFactor;
+
+                scores.push({ num: i, score: compositeScore });
+            }
+
+            // Select top numbers
+            scores.sort((a, b) => b.score - a.score);
+            const prediction = scores.slice(0, gameConfig.mainBalls).map(s => s.num).sort((a, b) => a - b);
+            const bonusPrediction = Math.floor(Math.random() * gameConfig.bonusRange) + 1;
+
+            // Calculate probability
+            const combinations = calculateCombination(gameConfig.mainRange, gameConfig.mainBalls);
+            const totalCombinations = combinations * gameConfig.bonusRange;
+            const probability = 1 / totalCombinations;
+
+            // Display prediction
+            displayPrediction(prediction, bonusPrediction, probability);
+
+            // Run Monte Carlo for this prediction
+            runMonteCarloSimulation(prediction, bonusPrediction);
+        }
+
+        function calculateCombination(n, r) {
+            if (r > n) return 0;
+            let result = 1;
+            for (let i = 0; i < r; i++) {
+                result *= (n - i) / (i + 1);
+            }
+            return Math.round(result);
+        }
+
+        function displayPrediction(numbers, bonus, probability) {
+            const display = document.getElementById('predictionDisplay');
+            const numbersContainer = document.getElementById('predictionNumbers');
+            
+            numbersContainer.innerHTML = '';
+            numbers.forEach(num => {
+                const ball = document.createElement('div');
+                ball.className = 'number-ball';
+                ball.textContent = num;
+                numbersContainer.appendChild(ball);
+            });
+
+            const bonusBall = document.createElement('div');
+            bonusBall.className = 'number-ball bonus';
+            bonusBall.textContent = bonus;
+            numbersContainer.appendChild(bonusBall);
+
+            const odds = Math.round(1 / probability);
+            document.getElementById('predictionProbability').textContent = 
+                `Theoretical Probability: 1 in ${odds.toLocaleString()}`;
+            document.getElementById('predictionConfidence').textContent = 
+                `This prediction uses statistical analysis but cannot overcome true randomness`;
+
+            display.style.display = 'block';
+            display.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ==========================================
+        // FULL ANALYSIS
+        // ==========================================
+        function runFullAnalysis() {
+            if (getCombinedData().length === 0) {
+                showNotification('Please generate or add data first', 'warning');
+                return;
+            }
+
+            showNotification('Running comprehensive analysis...', 'success');
+            
+            // Run all analyses
+            setTimeout(() => {
+                analyzeBenfordsLaw();
+                calculateEntropy();
+                analyzeMarkovChain();
+                analyzeFourierTransform();
+                analyzeFrequencyDistribution();
+                analyzeHotCold();
+                
+                showNotification('Analysis complete!', 'success');
+            }, 100);
+        }
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function updateStatsDisplay() {
+            const data = getCombinedData();
+            document.getElementById('totalDraws').textContent = data.length;
+        }
+
+        function showNotification(message, type) {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                background: ${type === 'success' ? 'var(--accent-success)' : type === 'warning' ? 'var(--accent-warning)' : 'var(--accent-danger)'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            generateMockData();
+            setTimeout(() => runFullAnalysis(), 500);
+        });
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>
