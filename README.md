@@ -19,6 +19,23 @@ This tool is designed for:
 - **Data Scientists** exploring statistical analysis methods
 - **Anyone** interested in understanding randomness and pattern detection
 
+## 📸 Screenshots
+
+<details>
+<summary>Click to view screenshots</summary>
+
+### Landing Page
+![Control Panel](image01.png)
+---
+
+### Fundamental Mathematical Tools
+![Shannon Entropy](image02.png)
+![Markov Chain](image03.png)
+![Fourier Transform](image04.png)
+</details>
+
+---
+
 ## ✨ Features
 
 ### 📊 Statistical Methods Implemented
